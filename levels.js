@@ -6,7 +6,7 @@ class LevelsManager {
 
     generateLevels() {
         const levels = [];
-        
+
         // Level 1-5: Basic levels with 4 colors
         for (let i = 1; i <= 5; i++) {
             levels.push({
@@ -18,7 +18,7 @@ class LevelsManager {
                 difficulty: 'easy'
             });
         }
-        
+
         // Level 6-10: Introduce 5th color
         for (let i = 6; i <= 10; i++) {
             levels.push({
@@ -30,7 +30,7 @@ class LevelsManager {
                 difficulty: 'medium'
             });
         }
-        
+
         // Level 11-15: Add 6th color and more tubes
         for (let i = 11; i <= 15; i++) {
             levels.push({
@@ -42,67 +42,67 @@ class LevelsManager {
                 difficulty: 'medium'
             });
         }
-        
-        // Level 16-20: 7 colors
+
+        // Level 16–20: 7 colores, capacidad 5, menos tubos
         for (let i = 16; i <= 20; i++) {
             levels.push({
                 level: i,
                 colors: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'cyan'],
-                filledTubes: 7,
+                filledTubes: 6,         // antes 7
                 emptyTubes: 2,
-                tubeCapacity: 4,
+                tubeCapacity: 5,        // antes 4
                 difficulty: 'hard'
             });
         }
-        
-        // Level 21-25: 8 colors
+
+        // Level 21–25: 8 colores, seguimos subiendo capacidad
         for (let i = 21; i <= 25; i++) {
             levels.push({
                 level: i,
                 colors: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'cyan', 'pink'],
-                filledTubes: 8,
+                filledTubes: 7,         // antes 8
                 emptyTubes: 2,
-                tubeCapacity: 4,
+                tubeCapacity: 5,
                 difficulty: 'hard'
             });
         }
-        
-        // Level 26-30: 9 colors, fewer empty tubes
+
+        // Level 26–30: 9 colores, transición a experto
         for (let i = 26; i <= 30; i++) {
             levels.push({
                 level: i,
                 colors: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'cyan', 'pink', 'lime'],
-                filledTubes: 9,
-                emptyTubes: 1,
-                tubeCapacity: 4,
+                filledTubes: 8,         // antes 9
+                emptyTubes: 2,
+                tubeCapacity: 5,
                 difficulty: 'expert'
             });
         }
-        
-        // Level 31-35: 10 colors, only 1 empty tube
+
+        // Level 31–35: 10 colores, mantenemos estructura
         for (let i = 31; i <= 35; i++) {
             levels.push({
                 level: i,
                 colors: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'cyan', 'pink', 'lime', 'brown'],
-                filledTubes: 10,
-                emptyTubes: 1,
-                tubeCapacity: 4,
+                filledTubes: 9,         // antes 10
+                emptyTubes: 2,
+                tubeCapacity: 5,
                 difficulty: 'expert'
             });
         }
-        
-        // Level 36-40: Maximum difficulty with capacity 5
+
+        // Level 36–40: master como estaba
         for (let i = 36; i <= 40; i++) {
             levels.push({
                 level: i,
                 colors: ['red', 'blue', 'green', 'yellow', 'purple', 'orange', 'cyan', 'pink'],
                 filledTubes: 8,
-                emptyTubes: 1,
+                emptyTubes: i < 39 ? 2 : 1,
                 tubeCapacity: 5,
                 difficulty: 'master'
             });
         }
-        
+
         return levels;
     }
 
@@ -170,44 +170,44 @@ class LevelsManager {
             tubeCapacity: 4,
             difficulty: 'custom'
         };
-        
+
         return { ...defaultConfig, ...config };
     }
 
     // Validate level configuration
     validateLevel(levelConfig) {
         const required = ['level', 'colors', 'filledTubes', 'emptyTubes', 'tubeCapacity'];
-        
+
         for (const field of required) {
             if (!(field in levelConfig)) {
                 throw new Error(`Missing required field: ${field}`);
             }
         }
-        
+
         if (levelConfig.colors.length === 0) {
             throw new Error('Level must have at least one color');
         }
-        
+
         if (levelConfig.filledTubes < 1) {
             throw new Error('Level must have at least one filled tube');
         }
-        
+
         if (levelConfig.emptyTubes < 1) {
             throw new Error('Level must have at least one empty tube');
         }
-        
+
         if (levelConfig.tubeCapacity < 1) {
             throw new Error('Tube capacity must be at least 1');
         }
-        
+
         // Check if the level is solvable (basic check)
         const totalBalls = levelConfig.colors.length * levelConfig.tubeCapacity;
         const totalCapacity = (levelConfig.filledTubes + levelConfig.emptyTubes) * levelConfig.tubeCapacity;
-        
+
         if (totalBalls > totalCapacity) {
             throw new Error('Level configuration would result in more balls than total tube capacity');
         }
-        
+
         return true;
     }
 
@@ -219,25 +219,25 @@ class LevelsManager {
             averageColors: 0,
             averageTubes: 0
         };
-        
+
         let totalColors = 0;
         let totalTubes = 0;
-        
+
         this.levels.forEach(level => {
             // Count by difficulty
             if (!stats.byDifficulty[level.difficulty]) {
                 stats.byDifficulty[level.difficulty] = 0;
             }
             stats.byDifficulty[level.difficulty]++;
-            
+
             // Sum for averages
             totalColors += level.colors.length;
             totalTubes += level.filledTubes + level.emptyTubes;
         });
-        
+
         stats.averageColors = totalColors / this.levels.length;
         stats.averageTubes = totalTubes / this.levels.length;
-        
+
         return stats;
     }
 }
