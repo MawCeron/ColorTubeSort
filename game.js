@@ -362,14 +362,8 @@ class BallSortGame {
             // Empty tubes are okay
             if (tube.balls.length === 0) return true;
             
-            // Full tubes with same color balls
-            if (tube.balls.length === tube.capacity) {
-                const firstColor = tube.balls[0].color;
-                return tube.balls.every(ball => ball.color === firstColor);
-            }
-            
-            // Partial tubes are not winning
-            return false;
+            const firstColor = tube.balls[0].color;
+            return tube.balls.every(ball => ball.color === firstColor);
         });
     }
 
